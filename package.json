@@ -1,0 +1,30 @@
+{
+  "name": "zeromq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon Server/Server.ts",
+    "client": "nodemon Client/Client.ts",
+    "dbcontrol":"nodemon Server/sql/dbcontrol.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^7.0.0",
+    "nodemon": "^1.19.3",
+    "prompt": "^1.0.0",
+    "prompts": "^2.2.1",
+    "sqlite": "^3.0.3",
+    "sqlite3": "^4.1.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4",
+    "zeromq": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.0.1",
+    "@types/sqlite3": "^3.1.5",
+    "@types/zeromq": "^4.6.2"
+  }
+}
