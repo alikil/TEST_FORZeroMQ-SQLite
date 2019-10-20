@@ -1,6 +1,6 @@
 import * as zmq from "zeromq";
 import { message } from "./message";
-import { DB } from "./Server";
+import { DB, pubSocket} from "./Server";
 class SubSocket {
     Socket: zmq.Socket;
     constructor(port: string | number){
@@ -11,17 +11,31 @@ class SubSocket {
         Socket.bindSync(`tcp://127.0.0.1:${port}`);
         console.log(`Sub bindSync to port ${port}`)
         Socket.subscribe(`api_in`)
-        Socket.on("message", (topic:string, message:string) => {
+        Socket.on("message", (message:string) => {
           const msg:message = JSON.parse(message)
           if (msg.type == "login"){
-            DB.get(`SELECT passw FROM User`).then((res:{}|string) => {
-              console.log(res)
-              if (res == msg.password){
-                console.log("+",res);
+            DB.get(`SELECT * FROM User`).then((res:any) => {
+              if (res.passw == msg.password){
+                let msgForSend = JSON.stringify(
+                  {
+                    msg_id:  msg.msg_id,  //равно значению входящего сообщения
+                    user_id: res.user_id,    //айди пользователя из БД
+                    status:  "ok"
+                  }
+                )
+                console.log(msgForSend);
+                pubSocket.send('api_out',msgForSend)
               } else {
-                console.log("+1",res);
+                let msgForSend = JSON.stringify(
+                  {
+                    msg_id:  msg.msg_id,  //равно значению входящего сообщения                    
+                    status:  "error",
+                    error:  "xxx"
+                  }
+                )
+                console.log(msgForSend);
+                pubSocket.send('api_out',msgForSend)
               }
-                console.log("+2",res);
             })
           }          
         });
