@@ -10,9 +10,9 @@ class SubSocket {
         Socket.connect(`tcp://127.0.0.1:${port}`);
         console.log(`SubSocket connected to port ${port}`)
         Socket.subscribe(`api_out`);
-        Socket.on("message", (topic:string ,msg:string) => {
-            const resMsg = new api_in(JSON.parse(msg))            
-            console.log("message reseved")
+        Socket.on("message", (topic:string ,msg:string) => {            
+            const resMsg = new api_in(JSON.parse(msg))
+            console.log("Message reseved => "+JSON.stringify(resMsg))
             if(resMsg.status == "ok"){
                 console.log("ok")
             } else if (resMsg.status == "error"){

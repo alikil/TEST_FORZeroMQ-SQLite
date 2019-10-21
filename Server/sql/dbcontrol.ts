@@ -18,7 +18,7 @@ import * as sqlite3 from "sqlite3";
   const db = init()
 
     const interer = `
-    INSERT IGNORE INTO User (user_id, email, passw) 
+    INSERT INTO User (user_id, email, passw) 
     VALUES (?,?,?)
     `
     const arr:[number,string,string] = [654645, "xxx@mail.com","yyy"]
@@ -26,5 +26,4 @@ import * as sqlite3 from "sqlite3";
         if (err) throw err;
         console.log("ok");
     })
-      console.log(test)
 

@@ -12,8 +12,8 @@ class PubSocket{
         return Socket
     }
     send(topic: string,msg: string) {
-        console.log([topic,msg])
-        this.Socket.send([topic,msg])        
+        this.Socket.send([topic,msg])
+        console.log("Message sended => "+ msg)
     }
 }
 export { PubSocket }

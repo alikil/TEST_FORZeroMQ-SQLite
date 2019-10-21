@@ -12,10 +12,9 @@ class sqlite {
     }
     get(selector: string) {
         return new Promise((resolve, reject) => {
-            console.log(selector)
-            this.DB.get(selector,(err,res)=>{
-                if (err) {reject(err)}
-                else {resolve(res)}
+            this.DB.get(selector,(err,data)=>{
+                if (err) {throw err}
+                data ? resolve(data) : reject("Not Found");
             })
         })
     }
