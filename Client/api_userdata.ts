@@ -1,15 +1,9 @@
-interface promptData {
-    email: string
-    pwd: string    
-}
-interface api_userdata {
-    type: string
-    password: string
-    email: string
-    msg_id: number
-}
 class api_userdata {
-    constructor(prompts:promptData) {
+    type: string;
+    email: any;
+    password: any;
+    msg_id: number;
+    constructor(prompts:any) {
         this.type = "login"
         this.email = prompts.email
         this.password = prompts.pwd

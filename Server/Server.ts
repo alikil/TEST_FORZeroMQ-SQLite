@@ -1,12 +1,9 @@
-import { SubSocket } from "./SubSocket";
-import { PubSocket } from "./PubSocket";
+import { IPublisher,ISubscriber } from "./Sockets";
 import { sqlite } from "./sql/sqlite3";
 
-export const DB = new sqlite() 
-
-new SubSocket(process.env.sub||4000)
-export const pubSocket = new PubSocket(process.env.pub||3000)
-
+export const DB = new sqlite()
+const publisher = new IPublisher(process.env.pub||3000)
+const subscriber = new ISubscriber(process.env.sub||4000, publisher)
 
 
 

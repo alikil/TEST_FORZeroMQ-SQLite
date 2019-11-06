@@ -1,18 +1,36 @@
 import * as zmq from "zeromq";
-import { message } from "./message";
-import { DB, pubSocket} from "./Server";
-class SubSocket {
+import { DB } from "./Server";
+
+class IPublisher {
+  socket: zmq.Socket;
+  static socket: zmq.Socket;
+    constructor (port: string | number){
+        this.socket = this.init(port)
+    }
+    init (port: string | number){
+        let socket = zmq.socket("pub")
+        socket.bindSync(`tcp://127.0.0.1:${port}`)
+        console.log(`Pub bindSync to port ${port}`)
+        return socket
+    }
+    send (topic: string, msg:string) {
+        this.socket.send([topic,msg])
+        console.log("Message sended => "+ msg)
+    }
+}
+
+class ISubscriber {
   Socket: zmq.Socket;
-  constructor(port: string | number){
-      this.Socket = this.init(port)
+  constructor(port: string | number,IPublisher: IPublisher){
+      this.Socket = this.init(port, IPublisher)
   }
-  init(port: string | number){
+  init(port: string | number,IPublisher:any){
     let Socket = zmq.socket("sub")
     Socket.bindSync(`tcp://127.0.0.1:${port}`);
     console.log(`Sub bindSync to port ${port}`)
     Socket.subscribe(`api_in`)
     Socket.on("message", (topic:string,message:string) => {          
-      const msg:message = JSON.parse(message)
+      const msg = JSON.parse(message)
       console.log("Message reseved =>"+JSON.stringify(msg))
       if (msg.type == "login"){
         DB.get(`SELECT * FROM User WHERE email='${msg.email}'`)            
@@ -26,14 +44,14 @@ class SubSocket {
                   user_id: res.user_id,
                   status:  "ok"
                 })
-              pubSocket.send('api_out',msgForSend)
+                IPublisher.send('api_out',msgForSend)
             } else {
               let msgForSend = JSON.stringify({
                   msg_id:  msg.msg_id,                 
                   status:  "error",
                   error:  "WRONG_PWD"
                 })
-              pubSocket.send('api_out',msgForSend)
+                IPublisher.send('api_out',msgForSend)
             }
           },
           (rej:any) => {
@@ -43,7 +61,7 @@ class SubSocket {
               status:  "error",
               error:  `WRONG_FORMAT`
             })
-            pubSocket.send('api_out',msgForSend)
+            IPublisher.send('api_out',msgForSend)
           }
         )
       }
@@ -51,4 +69,5 @@ class SubSocket {
   return Socket
   }
 }
-export { SubSocket }
+
+export { IPublisher,ISubscriber }
